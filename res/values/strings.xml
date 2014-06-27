@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TaskKill</string>
+    <string name="menu_settings">Settings</string>
+    <string name="SimpleDescription">Requests app to quit.\nUsed to kill simple apps that don\'t have background services. </string>
+    <string name="AdvancedDescription">Kills tasks via PID.\nUsed to kill process that like to restart themselves.</string>
+    <string name="ExtremeDescription">Kills task using Force Close via ICS+ method (Same as going to app and clicking force Close).\nRecommended option. If you see this option use it.</string>
+    <string name="HardcoreDescription">Kills task by disabling the package and re-enabling it.\nRecommended to try a lower one first. But this will almost certainly kill the app, and prevent it from restarting.</string>
+
+</resources>

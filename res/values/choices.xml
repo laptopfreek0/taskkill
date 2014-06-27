@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="rooted_GT_ICS">
+        <item >Simple</item>
+        <item >Advanced</item>
+        <item >Extreme</item>
+        <item >Hardcore</item>
+    </string-array>
+    <string-array name="rooted_LT_ICS">
+        <item >Simple</item>
+        <item >Advanced</item>
+        <item >Hardcore</item>
+    </string-array>
+    <string-array name="unrooted">
+        <item >Simple</item>
+    </string-array>
+    
+</resources>
