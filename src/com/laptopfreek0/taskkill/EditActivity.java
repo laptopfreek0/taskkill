@@ -110,11 +110,19 @@ public class EditActivity extends Activity {
 		    final List<PackageInfo> PackageList = EditActivity.this.getPackageManager().getInstalledPackages(0);
 		    ArrayList<App> Apps = new ArrayList<App>();
 		    for(PackageInfo packageInfo : PackageList) {
-		        // Excludes System apps
-		      if ((packageInfo.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
-  		    	App app = new App();
-  		    	app.addApp(packageInfo, EditActivity.this);
-  		    	Apps.add(app);
+		        // Excludes System apps with . in name
+		      if ((packageInfo.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0) {
+		    	  // System app
+  		    	  App app = new App();
+  		    	  app.addApp(packageInfo, EditActivity.this);
+		    	  if(!app.getName().contains(".")) {
+	  		    	  Apps.add(app);
+		    	  }
+		      } else {
+		    	  // Regular App
+  		    	  App app = new App();
+  		    	  app.addApp(packageInfo, EditActivity.this);
+  		    	  Apps.add(app);
 		      }
 		    }
 		    Message msg = new Message();
