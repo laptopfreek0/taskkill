@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import net.dinglisch.tasker.plugin.TaskerPlugin;
+
 import com.laptopfreek0.taskkill.objects.App;
 import com.laptopfreek0.taskkill.objects.AppComparer;
 import com.laptopfreek0.taskkill.objects.CustomSpinnerAdapter;
@@ -31,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -45,13 +48,17 @@ public class EditActivity extends Activity {
 	TextView warning;
 	TextView Description;
 	TextView TaskLabel;
+	TextView variabledescription;
 	EditText packagename;
+	EditText variablename;
 	boolean rootaccess = false;
 	boolean rootattempted = false;
 	boolean userquit = false;
 	String previousPackage = null;
 	String previousMethod = null;
 	int hiddenclickcount = 0;
+	CheckBox chkVariableName;
+	boolean checked = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,8 @@ public class EditActivity extends Activity {
 		if (bundle != null) {
 		if(bundle.containsKey("BUNDLE_EXTRA_PACKAGE"))
 		  previousPackage = bundle.getString("BUNDLE_EXTRA_PACKAGE");
+		  if (previousPackage.contains("%"))
+			  checked = true;
 		if(bundle.containsKey("BUNDLE_EXTRA_METHOD"))
 		  previousMethod = bundle.getString("BUNDLE_EXTRA_METHOD");
 		}
@@ -72,13 +81,27 @@ public class EditActivity extends Activity {
     method.setOnItemSelectedListener(methodListener);
     TaskLabel = (TextView) this.findViewById(R.id.TextView01);
     TaskLabel.setOnClickListener(hiddenclicklistener);
+    variablename = (EditText) this.findViewById(R.id.variablename);
     packagename = (EditText) this.findViewById(R.id.packagename);
     packagelist = (Spinner) this.findViewById(R.id.packagelist);
     packagelistprogressbar = (ProgressBar) this.findViewById(R.id.packageloadbar);
     Description = (TextView) this.findViewById(R.id.Description);
+    variabledescription = (TextView) this.findViewById(R.id.variabledescription);
     warning = (TextView) this.findViewById(R.id.Warning);
     warning.setTextColor(Color.RED);
     warning.setVisibility(View.GONE);
+    chkVariableName = (CheckBox) this.findViewById(R.id.chk_variablename);
+    if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(this)) {
+    	chkVariableName.setVisibility(View.VISIBLE);
+    	chkVariableName.setOnClickListener(checkListener);
+    	if(checked) {
+    		chkVariableName.setChecked(true);
+    		variablename.setText(previousPackage);
+    		variablename.setVisibility(View.VISIBLE);
+            packagelist.setVisibility(View.GONE);
+    	}
+    		
+    }
     
     // Get Package List
     Thread thread = new Thread(new Runnable() {
@@ -156,9 +179,20 @@ public class EditActivity extends Activity {
   	  final Intent resultIntent = new Intent();
 		  final Bundle resultBundle = new Bundle();
 		  resultBundle.putInt("BUNDLE_EXTRA_INT_VERSION_CODE", 1);
-		  String strPackage = packageData.get(packagelist.getSelectedItemPosition()).get("Package").toString();
+		  String strPackage = "";
+		  if(chkVariableName.isChecked()) {
+			  strPackage = variablename.getText().toString();
+			  if(!strPackage.contains("%"))
+				  strPackage = "%" + strPackage;
+		  } else {
+			  strPackage = packageData.get(packagelist.getSelectedItemPosition()).get("Package").toString();
+		  }
+		  if (!packagename.getText().toString().equalsIgnoreCase(""))
+			  strPackage = packagename.getText().toString();
 		  resultBundle.putString("BUNDLE_EXTRA_METHOD", strMethod);
 		  resultBundle.putString("BUNDLE_EXTRA_PACKAGE", strPackage);
+		    if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(this))
+	            TaskerPlugin.Setting.setVariableReplaceKeys(resultBundle, new String [] {  "BUNDLE_EXTRA_PACKAGE" });
 		  resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, "Method="+strMethod+"; Package="+strPackage);
 		  resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, resultBundle);
 		  setResult(RESULT_OK, resultIntent);
@@ -197,9 +231,20 @@ public class EditActivity extends Activity {
 	  	final Intent resultIntent = new Intent();
 	    final Bundle resultBundle = new Bundle();
 	    resultBundle.putInt("BUNDLE_EXTRA_INT_VERSION_CODE", 1);
-	    String strPackage = packageData.get(packagelist.getSelectedItemPosition()).get("Package").toString();
+		  String strPackage = "";
+		  if(chkVariableName.isChecked()) {
+			  strPackage = variablename.getText().toString();
+			  if(!strPackage.contains("%"))
+				  strPackage = "%" + strPackage;
+		  } else {
+			  strPackage = packageData.get(packagelist.getSelectedItemPosition()).get("Package").toString();
+		  }
+		  if (!packagename.getText().toString().equalsIgnoreCase(""))
+			  strPackage = packagename.getText().toString();
 	    resultBundle.putString("BUNDLE_EXTRA_METHOD", strMethod);
 	    resultBundle.putString("BUNDLE_EXTRA_PACKAGE", strPackage);
+	    if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(this))
+            TaskerPlugin.Setting.setVariableReplaceKeys(resultBundle, new String [] {  "BUNDLE_EXTRA_PACKAGE" });
 	    resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, "Method="+strMethod+"; Package="+strPackage);
 	    resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, resultBundle);
 	    setResult(RESULT_OK, resultIntent);
@@ -310,12 +355,35 @@ public class EditActivity extends Activity {
 		}
   };
   
+  private OnClickListener checkListener = new OnClickListener() {
+
+	@Override
+	public void onClick(View v) {
+		CheckBox chk = (CheckBox) v;
+		if (chk.isChecked())
+		{
+			variablename.setVisibility(View.VISIBLE);
+			variablename.setText("");
+	        packagelist.setVisibility(View.GONE);
+	        packagename.setVisibility(View.GONE);
+	        variabledescription.setVisibility(View.VISIBLE);
+		} else {
+			variablename.setVisibility(View.GONE);
+			variablename.setText("");
+	        packagelist.setVisibility(View.VISIBLE); 
+	        variabledescription.setVisibility(View.GONE);
+		}
+	}
+	  
+  };
+  
   private OnClickListener hiddenclicklistener = new OnClickListener() {
 
     @Override
     public void onClick(View v) {
       hiddenclickcount++;
       if(hiddenclickcount > 6) {
+    	variablename.setVisibility(View.GONE);
         packagename.setVisibility(View.VISIBLE);
         packagelist.setVisibility(View.GONE);
       }

@@ -41,13 +41,38 @@
         android:layout_marginBottom="10dp"
         android:background="#FF222222" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:text="Task"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/chk_variablename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:checked="false"
+            android:text="Variable"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/variabledescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:text="Task"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/VariableDescription"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/packagename"
@@ -56,8 +81,15 @@
         android:ems="10"
         android:hint="packagename"
         android:visibility="gone" >
-
-        <requestFocus />
+    </EditText>
+    
+    <EditText
+        android:id="@+id/variablename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="%variablename"
+        android:visibility="gone" >
     </EditText>
 
     <Spinner

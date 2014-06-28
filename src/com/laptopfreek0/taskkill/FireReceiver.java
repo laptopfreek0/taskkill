@@ -20,6 +20,7 @@ public final class FireReceiver extends BroadcastReceiver{
 			final Bundle bundle = intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
 			final String packagename = bundle.getString("BUNDLE_EXTRA_PACKAGE");
 			String selectedmethod = bundle.getString("BUNDLE_EXTRA_METHOD");
+			Log.i("Killing Package", packagename);
 			if(selectedmethod.equals("Simple")) {
 				Log.i("Selected Method", "Simple");
 				// Simple method is just a killbackgroundProcess Handles most simple apps, but nothing persistent.

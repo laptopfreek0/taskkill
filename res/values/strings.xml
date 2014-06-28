@@ -7,5 +7,6 @@
     <string name="AdvancedDescription">Kills tasks via PID.\nUsed to kill process that like to restart themselves.</string>
     <string name="ExtremeDescription">Kills task using Force Close via ICS+ method (Same as going to app and clicking force Close).\nRecommended option. If you see this option use it.</string>
     <string name="HardcoreDescription">Kills task by disabling the package and re-enabling it.\nRecommended to try a lower one first. But this will almost certainly kill the app, and prevent it from restarting.</string>
+    <string name="VariableDescription">Variable will be substituted when task is ran.</string>
 
 </resources>
