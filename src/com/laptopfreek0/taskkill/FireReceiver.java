@@ -83,16 +83,27 @@ public final class FireReceiver extends BroadcastReceiver{
 				  @Override
 				  public void run() {
 				    try {
-				       Process process = Runtime.getRuntime().exec(new String[] {"su", "-c", "/system/bin/sh"});
-				       DataOutputStream ostream = new DataOutputStream(process.getOutputStream());
-				       ostream.writeBytes("am force-stop "+packagename+"\n");
-				       ostream.writeBytes("exit\n");
-	             process.waitFor();
-	           } catch (IOException e) {
-	             e.printStackTrace();
-	           } catch (InterruptedException e) {
-	             e.printStackTrace();
-	           }
+				       int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+				       if (currentapiVersion >= 21) {
+				    	   Log.i("API VERSION", "Lollipop or greater");
+					       Process process = Runtime.getRuntime().exec(new String[] {"su", "-c", "/system/bin/sh"});
+					       DataOutputStream ostream = new DataOutputStream(process.getOutputStream());
+					       ostream.writeBytes("setenforce 0\n");
+					       ostream.writeBytes("am force-stop "+packagename+"\n");
+					       ostream.writeBytes("exit\n");
+					       process.waitFor();
+				       } else {
+					       Process process = Runtime.getRuntime().exec(new String[] {"su", "-c", "/system/bin/sh"});
+					       DataOutputStream ostream = new DataOutputStream(process.getOutputStream());
+					       ostream.writeBytes("am force-stop "+packagename+"\n");
+					       ostream.writeBytes("exit\n");
+					       process.waitFor();
+				       }
+		           } catch (IOException e) {
+		             e.printStackTrace();
+		           } catch (InterruptedException e) {
+		             e.printStackTrace();
+		           }
 				  }
 				});
 				thread.start();
