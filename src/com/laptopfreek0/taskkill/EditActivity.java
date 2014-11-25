@@ -69,8 +69,10 @@ public class EditActivity extends Activity {
 		if (bundle != null) {
 		if(bundle.containsKey("BUNDLE_EXTRA_PACKAGE"))
 		  previousPackage = bundle.getString("BUNDLE_EXTRA_PACKAGE");
+		if(previousPackage != null) {
 		  if (previousPackage.contains("%"))
 			  checked = true;
+		}
 		if(bundle.containsKey("BUNDLE_EXTRA_METHOD"))
 		  previousMethod = bundle.getString("BUNDLE_EXTRA_METHOD");
 		}
